@@ -13,8 +13,14 @@ fn main() {
     let p5 = Philosopher::new("Michel Foucault");
     let philosophers = vec![p1, p2, p3, p4, p5];
 
-    for philo in &philosophers {
-        philo.eat();
+    let handles: Vec<_> = philosophers.into_iter().map(|p| {
+        thread::spawn(move || {
+            p.eat();
+        })
+    }).collect();
+
+    for h in handles {
+        h.join().unwrap();
     }
 }
 
